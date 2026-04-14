@@ -157,6 +157,53 @@
             .family-unit { flex-direction: column; }
             .children-row { flex-direction: column; }
         }
+
+		/* --- Hover Effects para sa lahat ng Boxes --- */
+
+/* Base transition para swabe ang paggalaw */
+.ancestor-box, .member, .Child-box, .child-box-name, .grandchild-box {
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+/* Hover para sa Main Ancestors (Side bar) */
+.ancestor-box:hover {
+    transform: scale(1.05);
+    background-color: #34495e;
+    box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+    border-color: #2ecc71;
+}
+
+/* Hover para sa mga Anak (Child Box) */
+.Child-box:hover {
+    transform: translateY(-5px);
+    background-color: #c8e6c9 !important; /* Mas matingkad na green */
+    border-color: #1b5e20;
+    box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+}
+
+/* Hover para sa mga Apo (Grandchild) */
+.child-box-name:hover {
+    transform: translateY(-3px);
+    border-color: #27ae60;
+    background-color: #f1f8e9;
+    box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+}
+
+/* Hover para sa mga Apo sa Tuhod (Great-Grandchild) */
+.grandchild-box:hover {
+    transform: scale(1.02);
+    border-style: solid; /* Nagiging solid ang dashed line */
+    background-color: #ffffff;
+    border-color: #27ae60;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+/* Optional: Highlight ang buong pamilya kapag ni-hover ang unit */
+.family-unit:hover {
+    border-color: #27ae60;
+    background-color: #fafafa;
+}
     </style>
 </head>
 <body>
