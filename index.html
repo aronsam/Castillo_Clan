@@ -3,167 +3,449 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Castillo Family Tree</title>
+    <title>Victoriano Family Tree - Fixed Ancestor</title>
     <style>
-        body {
+        /* Pinapatay ang scroll sa main body para hindi sumama ang sidebar */
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            width: 100%;
+            overflow: hidden; 
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #f4f7f6;
-            margin: 0;
-            padding: 20px;
-            display: block; 
         }
 
-        /* Inalis ang h1 sa labas para ilagay sa loob ng wrapper */
-        .clan-title {
+        h1 {
+            text-align: center;
             color: #2c3e50;
             border-bottom: 3px solid #27ae60;
-            padding-bottom: 10px;
-            margin-bottom: 30px;
-            text-align: center;
-            /* Siguraduhin na ang width ng title ay kapantay ng grid */
-            width: 100%; 
+            padding: 15px 0;
+            margin: 0;
+            background: white;
+            z-index: 100;
+            position: relative;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
 
-        .scroll-container {
-            width: 100%;
-            overflow-x: auto;
+        /* Container ng buong layout */
+        .main-wrapper {
             display: flex;
-            /* Ang 'safe' keyword ay nagsasabi sa browser na 
-               i-center lang kung kasya, pero kung hindi, 
-               bumalik sa 'flex-start' para gumana ang scroll */
-            justify-content: safe center; 
-            padding-bottom: 20px;
+            height: calc(100vh - 70px); /* Bawas ang height ng header */
+            width: 100vw;
         }
 
-        .tree-wrapper {
-            /* Dito nakatali ang alignment ng h1 at ng grid */
+        /* LEFT SIDE: Fixed Ancestor Section */
+        .fixed-ancestor-sidebar {
+            width: 380px;
+            background-color: #f4f7f6;
             display: flex;
             flex-direction: column;
             align-items: center;
-            min-width: min-content; 
+            justify-content: center;
+            flex-shrink: 0;
+            border-right: 3px solid #27ae60;
+            position: relative;
+        }
+
+        /* RIGHT SIDE: Scrollable Branches */
+        .scrollable-content {
+            flex-grow: 1;
+            overflow: auto; /* Dito lalabas ang scrollbars */
+            padding: 40px;
+            display: flex;
+            align-items: flex-start;
+        }
+
+        /* Ancestor Box Design */
+        .ancestor-box {
+            background-color: #2c3e50;
+            color: white;
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.2em;
+            width: 300px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            border: 2px solid #27ae60;
+            z-index: 10;
+        }
+
+        /* Horizontal Line Connecting Sidebar to Branches */
+        .main-connector {
+            position: absolute;
+            right: -40px;
+            top: 50%;
+            width: 40px;
+            height: 3px;
+            background-color: #27ae60;
+        }
+
+        .clan-branches {
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+            position: relative;
+            padding-left: 20px;
+        }
+
+        /* Vertical Line for Branches */
+        .clan-branches::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 150px;
+            bottom: 20px;
+            width: 3px;
+            background-color: #27ae60;
+        }
+
+        .family-unit {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+            background: white;
             padding: 20px;
+            border-radius: 10px;
+            border: 1px solid #ddd;
+            box-shadow: 2px 2px 10px rgba(0,0,0,0.05);
+            position: relative;
+            min-width: max-content;
         }
 
-        .tree-grid {
-            display: grid;
-            grid-template-columns: repeat(8, 200px);
-            gap: 15px;
-            padding: 10px;
+        /* Line connecting branch to vertical line */
+        .family-unit::before {
+            content: "";
+            position: absolute;
+            left: -20px;
+            top: 50%;
+            width: 20px;
+            height: 3px;
+            background-color: #27ae60;
         }
 
-        /* I-update ang base style ng .member */
         .member {
             background: white;
             border: 2px solid #27ae60;
             border-radius: 8px;
-            padding: 15px;
+            padding: 12px 20px;
             text-align: center;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            min-height: 60px;
-            box-sizing: border-box;
-            
-            /* ADD THIS: Para maging smooth ang transition ng hover */
-            transition: all 0.3s ease;
-            cursor: pointer; /* Ginagawang "hand" ang mouse pointer */
-        }
-
-        /* ADD THIS: Hover effect */
-        .member:hover {
-            background-color: #27ae60; /* Magiging green ang background */
-            transform: translateY(-5px); /* Bahagyang aangat ang box */
-            box-shadow: 0 8px 15px rgba(0,0,0,0.2); /* Lalalim ang shadow */
-        }
-
-        /* ADD THIS: Para maging puti ang text kapag naka-hover */
-        .member:hover .name {
-            color: white;
-        }
-
-        /* Siguraduhin na ang transition ay applied din sa name */
-        .name {
             font-weight: bold;
             color: #2c3e50;
-            font-size: 0.95em;
-            line-height: 1.2;
-            transition: color 0.3s ease;
+            min-width: 200px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
         }
 
-       .invisible {
-            visibility: hidden;
+        .Child-box { background-color: #e8f5e9; border-color: #2e7d32; width: 250px; }
+        .children-row { display: flex; flex-direction: row; gap: 20px; align-items: flex-start; }
+        .child-branch-column { display: flex; flex-direction: column; gap: 10px; align-items: center; }
+        
+        .child-box-name { font-size: 0.9em; border-color: #81c784; background-color: #fff; }
+        .grandchild-box { font-size: 0.8em; border-color: #a5d6a7; border-style: dashed; min-width: 170px; }
+
+        .label { display: block; font-size: 0.7em; color: #27ae60; font-weight: bold; text-transform: uppercase; margin-bottom: 5px; }
+        .apo-header { font-size: 0.65em; color: #27ae60; font-weight: bold; text-transform: uppercase; margin-top: 5px; }
+
+        /* Mobile View: Babalik sa normal scroll */
+        @media (max-width: 900px) {
+            body, html { overflow: auto; }
+            .main-wrapper { flex-direction: column; height: auto; }
+            .fixed-ancestor-sidebar { width: 100%; height: auto; padding: 30px 0; border-right: none; border-bottom: 3px solid #27ae60; }
+            .main-connector { display: none; }
+            .scrollable-content { overflow: visible; width: 100%; padding: 20px; }
+            .family-unit { flex-direction: column; }
+            .children-row { flex-direction: column; }
         }
-
-        /* Stable centering para sa Row 1 */
-        .row-1-center {
-            grid-column: 1 / span 8;
-            justify-self: center;
-            width: 200px; 
-        }
-
-        .col-2 { grid-column: 2; }
-        .col-3 { grid-column: 3; }
-
     </style>
 </head>
 <body>
 
-    <div class="scroll-container">
-        <div class="tree-wrapper">
-            
-            <h1 class="clan-title">ISRAELITA & RODOLFO <span style="color: #27ae60;">CLAN</span></h1>
+    <h1>BIENVENIDA VICTORIANO & SOCRATES OLIVEROS</h1>
 
-            <div class="tree-grid">
-                
-                <div class="member row-1-center">
-                    <span class="name">Israelita & Rodolfo Castillo Sr.</span>
+    <div class="main-wrapper">
+        
+        <div class="fixed-ancestor-sidebar">
+            <span class="label">Main Ancestors</span>
+            <div class="ancestor-box">
+                BIENVENIDA VICTORIANO <br>& SOCRATES OLIVEROS
+            </div>
+            <div class="main-connector"></div>
+        </div>
+
+        <div class="scrollable-content">
+            <div class="clan-branches">
+
+                <div class="family-unit">
+                    <div class="child-main">
+                        <span class="label">Child</span>
+                        <div class="member Child-box">Israelita Victoriano & Rodolfo Castillo Sr.</div>
+                    </div>
+                    <div class="children-row">
+                        <div class="child-branch-column">
+                            <span class="apo-header">Grandchild</span>
+                            <div class="member child-box-name">Marisa & Oliver Galicia</div>
+                            <span class="apo-header">Great-Grandchild</span>
+                            <div class="member grandchild-box">Cedric John & Ricajel</div>
+                            <div class="member grandchild-box">Vincent & Stephanie</div>
+                            <div class="member grandchild-box">Ephraim</div>
+                        </div>
+                        <div class="child-branch-column">
+                            <span class="apo-header">Grandchild</span>
+                            <div class="member child-box-name">Mariven & Erwin Magcalayo</div>
+                            <span class="apo-header">Great-Grandchild</span>
+                            <div class="member grandchild-box">Brix & Lizalyn</div>
+                            <div class="member grandchild-box">Christian & Joan</div>
+                            <div class="member grandchild-box">Cressel</div>
+                            <div class="member grandchild-box">Sabina</div>
+                        </div>
+                        <div class="child-branch-column">
+                            <span class="apo-header">Grandchild</span>
+                            <div class="member child-box-name">Rodolfo & Jenifer Castillo</div>
+                            <span class="apo-header">Great-Grandchild</span>
+                            <div class="member grandchild-box">Maria Leonor & Peter Coumbs</div>
+                            <div class="member grandchild-box">Florenz Rodolfo</div>
+                            <div class="member grandchild-box">Oliver Wendell</div>
+                            <div class="member grandchild-box">Earl Warren</div>
+                            <div class="member grandchild-box">Rodolfo III</div>
+                        </div>
+                        <div class="child-branch-column">
+                            <span class="apo-header">Grandchild</span>
+                            <div class="member child-box-name">Rodel & Rialeza Castillo</div>
+                            <span class="apo-header">Great-Grandchild</span>
+                            <div class="member grandchild-box">Randulf Reese</div>
+                        </div>
+                        <div class="child-branch-column">
+                            <span class="apo-header">Grandchild</span>
+                            <div class="member child-box-name">Alex & Eden Grace Castillo</div>
+                            <span class="apo-header">Great-Grandchild</span>
+                            <div class="member grandchild-box">Denise Rhea</div>
+                            <div class="member grandchild-box">Jan Alexis</div>
+                            <div class="member grandchild-box">Louise Jannesa</div>
+                        </div>
+                        <div class="child-branch-column">
+                            <span class="apo-header">Grandchild</span>
+                            <div class="member child-box-name">Rona & Alvin Galsim</div>
+                            <span class="apo-header">Great-Grandchild</span>
+                            <div class="member grandchild-box">Aron Jaspher</div>
+                            <div class="member grandchild-box">Sam Michael</div>
+                            <div class="member grandchild-box">Tyler John</div>
+                        </div>
+                        <div class="child-branch-column">
+                            <span class="apo-header">Grandchild</span>
+                            <div class="member child-box-name">Emmalyn & Marcelino Caturass</div>
+                            <span class="apo-header">Great-Grandchild</span>
+                            <div class="member grandchild-box">Marco</div>
+                            <div class="member grandchild-box">Yra</div>
+                            <div class="member grandchild-box">Fym</div>
+                        </div>
+                        <div class="child-branch-column">
+                            <span class="apo-header">Grandchild</span>
+                            <div class="member child-box-name">Teodoro & Lydia Castillo</div>
+                            <span class="apo-header">Great-Grandchild</span>
+                            <div class="member grandchild-box">Irish Mae</div>
+                            <div class="member grandchild-box">Lester Sean</div>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="member"><span class="name">Marisa & Oliver Galicia</span></div>
-                <div class="member"><span class="name">Mariven & Erwin Magcalayo</span></div>
-                <div class="member"><span class="name">Jenifer & Rodolfo Castillo</span></div>
-                <div class="member"><span class="name">Rialeza & Rodel Castillo</span></div>
-                <div class="member"><span class="name">Eden Grace & Alex Castillo</span></div>
-                <div class="member"><span class="name">Rona & Alvin Galsim</span></div>
-                <div class="member"><span class="name">Emmalyn & Marcelino Caturas</span></div>
-                <div class="member"><span class="name">Lydia & Teodoro Castillo</span></div>
+                <div class="family-unit">
+                    <div class="child-main">
+                        <span class="label">Child</span>
+                        <div class="member Child-box">ELVELYN & NAP LADINES</div>
+                    </div>
+                    <div class="children-row">
+                        <div class="child-branch-column">
+                            <span class="apo-header">Grandchild</span>
+                            <div class="member child-box-name">LESLIE & RIC PARCON</div>
+                            <span class="apo-header">Great-Grandchild</span>
+                            <div class="member grandchild-box">GWYNETH</div>
+                            <div class="member grandchild-box">REIRI</div>
+                        </div>
+                        <div class="child-branch-column">
+                            <span class="apo-header">Grandchild</span>
+                            <div class="member child-box-name">LOU ANNE</div>
+                        </div>
+                    </div>
+                </div>
 
-                <div class="member"><span class="name">Ricajel & Cedric John Galicia</span></div>
-                <div class="member"><span class="name">Lizalyn & Brix Magcalayo</span></div>
-                <div class="member"><span class="name">Maria Leonor & Peter Coumbs</span></div>
-                <div class="member"><span class="name">Randulf Reese Castillo</span></div>
-                <div class="member"><span class="name">Denise Rhea Castillo</span></div>
-                <div class="member"><span class="name">Aron Jaspher Galsim</span></div>
-                <div class="member"><span class="name">Marco Caturas</span></div>
-                <div class="member"><span class="name">Irish Mae Castillo</span></div>
+                <div class="family-unit">
+                    <div class="child-main">
+                        <span class="label">Child</span>
+                        <div class="member Child-box">FRED- VERGIE OLIVEROS</div>
+                    </div>
+                    <div class="children-row">
+                        <div class="child-branch-column">
+                            <span class="apo-header">Grandchild</span>
+                            <div class="member child-box-name">ELIZ- ELI TERANIA</div>
+                            <span class="apo-header">Great-Grandchild</span>
+                            <div class="member grandchild-box">FREDMERT</div>
+                            <div class="member grandchild-box">FRANCIS-MARTIN</div>
+                        </div>
+                        <div class="child-branch-column">
+                            <span class="apo-header">Grandchild</span>
+                            <div class="member child-box-name">GRACE- KEVIN VOSOTROS</div>
+                            <span class="apo-header">Great-Grandchild</span>
+                            <div class="member grandchild-box">KG</div>
+                            <div class="member grandchild-box">GAB</div>
+                        </div>
+                        <div class="child-branch-column">
+                            <span class="apo-header">Grandchild</span>
+                            <div class="member child-box-name">OLIVER- MURIEL OLIVEROS</div>
+                            <span class="apo-header">Great-Grandchild</span>
+                            <div class="member grandchild-box">THEA</div>
+                            <div class="member grandchild-box">XANDER</div>
+                        </div>
+                        <div class="child-branch-column">
+                            <span class="apo-header">Grandchild</span>
+                            <div class="member child-box-name">VERGEL</div>
+                        </div>
+                    </div>
+                </div>
 
-                <div class="member"><span class="name">Stephanie & Vincent Galicia</span></div>
-                <div class="member"><span class="name">Joan & Christian Magcalayo</span></div>
-                <div class="member"><span class="name">Florenz Rodolfo Castillo</span></div>
-                <div class="member invisible"></div> 
-                <div class="member"><span class="name">Jan Alexis Castillo</span></div>
-                <div class="member"><span class="name">Sam Michael Galsim</span></div>
-                <div class="member"><span class="name">Yra Caturas</span></div>
-                <div class="member"><span class="name">Lester Sean Castillo</span></div>
+                <div class="family-unit">
+                    <div class="child-main">
+                        <span class="label">Child</span>
+                        <div class="member Child-box">YOLINA- JOBERT MAULIT</div>
+                    </div>
+                    <div class="children-row">
+                        <div class="child-branch-column">
+                            <span class="apo-header">Grandchild</span>
+                            <div class="member child-box-name">ELSPETH-- RUSSEL PROUT</div>
+                            <span class="apo-header">Great-Grandchild</span>
+                            <div class="member grandchild-box">ELIJAH</div>
+                            <div class="member grandchild-box">LYNDIN</div>
+                        </div>
+                    </div>
+					<div class="children-row">
+                        <div class="child-branch-column">
+                            <span class="apo-header">Grandchild</span>
+                            <div class="member child-box-name">HARRY-MANILYN MAULIT</div>
+                            <span class="apo-header">Great-Grandchild</span>
+                            <div class="member grandchild-box">JOSEPH</div>
+                            <div class="member grandchild-box">AMELIA</div>
+                        </div>
+                    </div>
+					
+					<div class="children-row">
+                        <div class="child-branch-column">
+                            <span class="apo-header">Grandchild</span>
+                            <div class="member child-box-name">JOLLY ANN -CHIPILIRO KADZONGWE</div>
+                            <span class="apo-header">Great-Grandchild</span>
+                            <div class="member grandchild-box">NAHLA</div>
+							<div class="member grandchild-box">NAHLA</div>
+                        </div>
+                    </div>
+                </div>
 
-                <div class="member"><span class="name">Ephraim Galicia</span></div>
-                <div class="member"><span class="name">Cressel Magcalayo</span></div>
-                <div class="member"><span class="name">Oliver Wendell Castillo</span></div>
-                <div class="member invisible"></div> 
-                <div class="member"><span class="name">Louise Jannesa Castillo</span></div>
-                <div class="member"><span class="name">Tyler John Galsim</span></div>
-                <div class="member"><span class="name">Fym Caturas</span></div>
-                <div class="invisible"></div> 
-
-                <div class="invisible"></div> 
-                <div class="member col-2"><span class="name">Sabina Magcalayo</span></div>
-                <div class="member col-3"><span class="name">Earl Warren Castillo</span></div>
-                <div class="invisible" style="grid-column: 4 / span 5;"></div>
-
-                <div class="invisible"></div> 
-                <div class="invisible"></div> 
-                <div class="member col-3"><span class="name">Rodolfo Castillo III</span></div>
+				<div class="family-unit">
+                    <div class="child-main">
+                        <span class="label">Child</span>
+                        <div class="member Child-box">RENE- AMELIA OLIVEROS</div>
+                    </div>
+                    <div class="children-row">
+                        <div class="child-branch-column">
+                            <span class="apo-header">Grandchild</span>
+                            <div class="member child-box-name">AIRENE-RONALD ASUNCION</div>
+                            <span class="apo-header">Great-Grandchild</span>
+                            <div class="member grandchild-box">CHRISTINE</div>
+                            <div class="member grandchild-box">SIMON</div>
+							<div class="member grandchild-box">APRIL JOY</div>
+                            <div class="member grandchild-box">DANIELLE</div>
+                        </div>
+                        <div class="child-branch-column">
+                            <span class="apo-header">Grandchild</span>
+                            <div class="member child-box-name">LENIE MARIE</div>
+                        </div>
+						<div class="child-branch-column">
+                            <span class="apo-header">Grandchild</span>
+                            <div class="member child-box-name">MARK- ANNE OLIVEROS</div>
+							<span class="apo-header">Great-Grandchild</span>
+							<div class="member grandchild-box">DREW</div>
+                        </div>
+                    </div>
+                </div>
+				
+                
+				<div class="family-unit">
+                    <div class="child-main">
+                        <span class="label">Child</span>
+                        <div class="member Child-box">ALVIN-MONA OLIVEROS</div>
+                    </div>
+                    <div class="children-row">
+                        <div class="child-branch-column">
+                            <span class="apo-header">Grandchild</span>
+                            <div class="member child-box-name">RIZZEL-ALLAN TIANZON</div>
+                            <span class="apo-header">Great-Grandchild</span>
+                            <div class="member grandchild-box">ALYSSA</div>
+                            <div class="member grandchild-box">JOHN</div>
+							<div class="member grandchild-box">AIZEL</div>
+                        </div>
+                        <div class="child-branch-column">
+                            <span class="apo-header">Grandchild</span>
+                            <div class="member child-box-name">ALVIN</div>
+                        </div>
+						<div class="child-branch-column">
+                            <span class="apo-header">Grandchild</span>
+                            <div class="member child-box-name">MARLON</div>
+                        </div>
+						<div class="child-branch-column">
+                            <span class="apo-header">Grandchild</span>
+                            <div class="member child-box-name">ALFIE</div>
+                        </div>
+						<div class="child-branch-column">
+                            <span class="apo-header">Grandchild</span>
+                            <div class="member child-box-name">LENIE- MARK MOLINA</div>
+                            <span class="apo-header">Great-Grandchild</span>
+                            <div class="member grandchild-box">ZAIRON</div>
+                            <div class="member grandchild-box">ANNA LIZA</div>
+							<div class="member grandchild-box">KHESIA</div>
+							<div class="member grandchild-box">MARIEL</div>
+                        </div>
+						<div class="child-branch-column">
+                            <span class="apo-header">Grandchild</span>
+                            <div class="member child-box-name">KRIS</div>
+                        </div>
+                    </div>
+                </div>
+				
+				<div class="family-unit">
+                    <div class="child-main">
+                        <span class="label">Child</span>
+                        <div class="member Child-box">ELENOR- RENE UNTALAN</div>
+                    </div>
+                    <div class="children-row">
+                        <div class="child-branch-column">
+                            <span class="apo-header">Grandchild</span>
+                            <div class="member child-box-name">RENNAN JAY-NIMPHA OLIVEROS</div>
+                            <span class="apo-header">Great-Grandchild</span>
+                            <div class="member grandchild-box">LA TRICE BADA</div>
+                        </div>
+						<div class="child-branch-column">
+                            <span class="apo-header">Grandchild</span>
+                            <div class="member child-box-name">CHARMAGNE- NATHAN KASSEES</div>
+                            <span class="apo-header">Great-Grandchild</span>
+                            <div class="member grandchild-box">ADEA TALA</div>
+                        </div>
+              </div>
+				</div>
+				
+				<div class="family-unit">
+                    <div class="child-main">
+                        <span class="label">Child</span>
+                        <div class="member Child-box">LUCY-BOBOT FRADEJAS</div>
+                    </div>
+                    <div class="children-row">
+                        <div class="child-branch-column">
+                            <span class="apo-header">Grandchild</span>
+                            <div class="member child-box-name">BORIS</div>
+                        </div>
+                        <div class="child-branch-column">
+                            <span class="apo-header">Grandchild</span>
+                            <div class="member child-box-name">MEGAN</div>
+                        </div>
+                    </div>
+                </div>
 
             </div>
         </div>
