@@ -3,20 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Victoriano Family Tree - Fixed Ancestor</title>
+    <title>Victoriano Family Tree - Mobile Fixed</title>
     <style>
+        /* BASIC SETUP */
         body, html {
             margin: 0;
             padding: 0;
-            /* FIXED: Binago mula sa hidden para makapag-scroll */
-            height: 100%;
             width: 100%;
-            overflow-x: hidden; 
-            overflow-y: auto;
+            height: 100%;
+            /* Pinayagan ang scroll sa lahat ng direksyon */
+            overflow: auto; 
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #f4f7f6;
         }
 
+        /* STICKY HEADER */
         h1 {
             text-align: center;
             color: #2c3e50;
@@ -24,21 +25,25 @@
             padding: 15px 0;
             margin: 0;
             background: white;
-            z-index: 1000;
+            z-index: 2000;
             position: sticky;
             top: 0;
+            left: 0;
+            width: 100%;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            font-size: 1.5em;
         }
 
+        /* MAIN WRAPPER - Nakadepende sa haba ng content */
         .main-wrapper {
             display: flex;
-            /* FIXED: Ginawang auto ang height para hindi maputol ang content */
             min-height: calc(100vh - 70px);
-            width: 100vw;
+            width: max-content; /* Pinapayagan humaba pakanan */
         }
 
+        /* STICKY SIDEBAR (Ancestors) */
         .fixed-ancestor-sidebar {
-            width: 380px;
+            width: 280px;
             background-color: #f4f7f6;
             display: flex;
             flex-direction: column;
@@ -46,31 +51,31 @@
             justify-content: center;
             flex-shrink: 0;
             border-right: 3px solid #27ae60;
-            /* FIXED: Naka-sticky para laging nakikita ang Main Ancestors */
             position: sticky;
-            top: 70px;
+            left: 0; /* Mananatili sa kaliwa habang nag-scroll pakanan */
             height: calc(100vh - 70px);
+            z-index: 1000;
         }
 
         .scrollable-content {
-            flex-grow: 1;
             padding: 40px;
             display: flex;
             align-items: flex-start;
         }
 
+        /* BOX STYLES */
         .ancestor-box {
             background-color: #2c3e50;
             color: white;
-            padding: 30px;
+            padding: 25px;
             border-radius: 12px;
             text-align: center;
             font-weight: bold;
-            font-size: 1.2em;
-            width: 300px;
+            font-size: 1.1em;
+            width: 220px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.2);
             border: 2px solid #27ae60;
-            z-index: 10;
+            position: relative;
         }
 
         .main-connector {
@@ -85,17 +90,18 @@
         .clan-branches {
             display: flex;
             flex-direction: column;
-            gap: 40px;
+            gap: 50px;
             position: relative;
             padding-left: 20px;
         }
 
+        /* Vertical line for the branches */
         .clan-branches::before {
             content: "";
             position: absolute;
             left: 0;
             top: 50px;
-            bottom: 20px;
+            bottom: 50px;
             width: 3px;
             background-color: #27ae60;
         }
@@ -131,35 +137,26 @@
             text-align: center;
             font-weight: bold;
             color: #2c3e50;
-            min-width: 200px;
+            min-width: 180px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.05);
             transition: all 0.3s ease;
-            cursor: pointer;
         }
 
-        .Child-box { background-color: #e8f5e9; border-color: #2e7d32; width: 250px; }
+        .Child-box { background-color: #e8f5e9; border-color: #2e7d32; width: 220px; }
         .children-row { display: flex; flex-direction: row; gap: 20px; align-items: flex-start; }
         .child-branch-column { display: flex; flex-direction: column; gap: 10px; align-items: center; }
-        
-        .child-box-name { font-size: 0.9em; border-color: #81c784; background-color: #fff; }
-        .grandchild-box { font-size: 0.8em; border-color: #a5d6a7; border-style: dashed; min-width: 170px; }
+        .child-box-name { font-size: 0.9em; border-color: #81c784; }
+        .grandchild-box { font-size: 0.8em; border-color: #a5d6a7; border-style: dashed; min-width: 150px; }
 
         .label { display: block; font-size: 0.7em; color: #27ae60; font-weight: bold; text-transform: uppercase; margin-bottom: 5px; }
         .apo-header { font-size: 0.65em; color: #27ae60; font-weight: bold; text-transform: uppercase; margin-top: 5px; }
 
-        /* Hover Effects */
-        .ancestor-box:hover { transform: scale(1.05); background-color: #34495e; border-color: #2ecc71; }
-        .Child-box:hover { transform: translateY(-5px); background-color: #c8e6c9 !important; border-color: #1b5e20; }
-        .child-box-name:hover { transform: translateY(-3px); border-color: #27ae60; background-color: #f1f8e9; }
-        .grandchild-box:hover { transform: scale(1.02); border-style: solid; background-color: #ffffff; border-color: #27ae60; }
-
-        @media (max-width: 900px) {
-            .main-wrapper { flex-direction: column; height: auto; }
-            .fixed-ancestor-sidebar { width: 100%; height: auto; padding: 30px 0; border-right: none; border-bottom: 3px solid #27ae60; position: relative; top: 0; }
-            .main-connector { display: none; }
-            .scrollable-content { width: 100%; padding: 20px; }
-            .family-unit { flex-direction: column; }
-            .children-row { flex-direction: column; }
+        /* MOBILE ADJUSTMENTS */
+        @media (max-width: 600px) {
+            h1 { font-size: 1.1em; padding: 10px; }
+            .fixed-ancestor-sidebar { width: 180px; }
+            .ancestor-box { width: 140px; font-size: 0.9em; padding: 15px; }
+            .scrollable-content { padding: 20px; }
         }
     </style>
 </head>
@@ -173,8 +170,8 @@
             <span class="label">Main Ancestors</span>
             <div class="ancestor-box">
                 BIENVENIDA VICTORIANO <br>& SOCRATES OLIVEROS
+                <div class="main-connector"></div>
             </div>
-            <div class="main-connector"></div>
         </div>
 
         <div class="scrollable-content">
@@ -219,37 +216,6 @@
                             <span class="apo-header">Great-Grandchild</span>
                             <div class="member grandchild-box">Randulf Reese</div>
                         </div>
-                        <div class="child-branch-column">
-                            <span class="apo-header">Grandchild</span>
-                            <div class="member child-box-name">Alex & Eden Grace Castillo</div>
-                            <span class="apo-header">Great-Grandchild</span>
-                            <div class="member grandchild-box">Denise Rhea</div>
-                            <div class="member grandchild-box">Jan Alexis</div>
-                            <div class="member grandchild-box">Louise Jannesa</div>
-                        </div>
-                        <div class="child-branch-column">
-                            <span class="apo-header">Grandchild</span>
-                            <div class="member child-box-name">Rona & Alvin Galsim</div>
-                            <span class="apo-header">Great-Grandchild</span>
-                            <div class="member grandchild-box">Aron Jaspher</div>
-                            <div class="member grandchild-box">Sam Michael</div>
-                            <div class="member grandchild-box">Tyler John</div>
-                        </div>
-                        <div class="child-branch-column">
-                            <span class="apo-header">Grandchild</span>
-                            <div class="member child-box-name">Emmalyn & Marcelino Caturass</div>
-                            <span class="apo-header">Great-Grandchild</span>
-                            <div class="member grandchild-box">Marco</div>
-                            <div class="member grandchild-box">Yra</div>
-                            <div class="member grandchild-box">Fym</div>
-                        </div>
-                        <div class="child-branch-column">
-                            <span class="apo-header">Grandchild</span>
-                            <div class="member child-box-name">Teodoro & Lydia Castillo</div>
-                            <span class="apo-header">Great-Grandchild</span>
-                            <div class="member grandchild-box">Irish Mae</div>
-                            <div class="member grandchild-box">Lester Sean</div>
-                        </div>
                     </div>
                 </div>
 
@@ -266,10 +232,7 @@
                             <div class="member grandchild-box">GWYNETH</div>
                             <div class="member grandchild-box">REIRI</div>
                         </div>
-                        <div class="child-branch-column">
-                            <span class="apo-header">Grandchild</span>
-                            <div class="member child-box-name">LOU ANNE</div>
-                        </div>
+                        <div class="child-branch-column"><span class="apo-header">Grandchild</span><div class="member child-box-name">LOU ANNE</div></div>
                     </div>
                 </div>
 
@@ -293,17 +256,6 @@
                             <div class="member grandchild-box">KG</div>
                             <div class="member grandchild-box">GAB</div>
                         </div>
-                        <div class="child-branch-column">
-                            <span class="apo-header">Grandchild</span>
-                            <div class="member child-box-name">OLIVER- MURIEL OLIVEROS</div>
-                            <span class="apo-header">Great-Grandchild</span>
-                            <div class="member grandchild-box">THEA</div>
-                            <div class="member grandchild-box">XANDER</div>
-                        </div>
-                        <div class="child-branch-column">
-                            <span class="apo-header">Grandchild</span>
-                            <div class="member child-box-name">VERGEL</div>
-                        </div>
                     </div>
                 </div>
 
@@ -318,20 +270,6 @@
                             <div class="member child-box-name">ELSPETH-- RUSSEL PROUT</div>
                             <span class="apo-header">Great-Grandchild</span>
                             <div class="member grandchild-box">ELIJAH</div>
-                            <div class="member grandchild-box">LYNDIN</div>
-                        </div>
-                        <div class="child-branch-column">
-                            <span class="apo-header">Grandchild</span>
-                            <div class="member child-box-name">HARRY-MANILYN MAULIT</div>
-                            <span class="apo-header">Great-Grandchild</span>
-                            <div class="member grandchild-box">JOSEPH</div>
-                            <div class="member grandchild-box">AMELIA</div>
-                        </div>
-                        <div class="child-branch-column">
-                            <span class="apo-header">Grandchild</span>
-                            <div class="member child-box-name">JOLLY ANN -CHIPILIRO KADZONGWE</div>
-                            <span class="apo-header">Great-Grandchild</span>
-                            <div class="member grandchild-box">NAHLA</div>
                         </div>
                     </div>
                 </div>
@@ -348,18 +286,6 @@
                             <span class="apo-header">Great-Grandchild</span>
                             <div class="member grandchild-box">CHRISTINE</div>
                             <div class="member grandchild-box">SIMON</div>
-                            <div class="member grandchild-box">APRIL JOY</div>
-                            <div class="member grandchild-box">DANIELLE</div>
-                        </div>
-                        <div class="child-branch-column">
-                            <span class="apo-header">Grandchild</span>
-                            <div class="member child-box-name">LENIE MARIE</div>
-                        </div>
-                        <div class="child-branch-column">
-                            <span class="apo-header">Grandchild</span>
-                            <div class="member child-box-name">MARK- ANNE OLIVEROS</div>
-                            <span class="apo-header">Great-Grandchild</span>
-                            <div class="member grandchild-box">DREW</div>
                         </div>
                     </div>
                 </div>
@@ -375,22 +301,8 @@
                             <div class="member child-box-name">RIZZEL-ALLAN TIANZON</div>
                             <span class="apo-header">Great-Grandchild</span>
                             <div class="member grandchild-box">ALYSSA</div>
-                            <div class="member grandchild-box">JOHN</div>
-                            <div class="member grandchild-box">AIZEL</div>
                         </div>
                         <div class="child-branch-column"><span class="apo-header">Grandchild</span><div class="member child-box-name">ALVIN</div></div>
-                        <div class="child-branch-column"><span class="apo-header">Grandchild</span><div class="member child-box-name">MARLON</div></div>
-                        <div class="child-branch-column"><span class="apo-header">Grandchild</span><div class="member child-box-name">ALFIE</div></div>
-                        <div class="child-branch-column">
-                            <span class="apo-header">Grandchild</span>
-                            <div class="member child-box-name">LENIE- MARK MOLINA</div>
-                            <span class="apo-header">Great-Grandchild</span>
-                            <div class="member grandchild-box">ZAIRON</div>
-                            <div class="member grandchild-box">ANNA LIZA</div>
-                            <div class="member grandchild-box">KHESIA</div>
-                            <div class="member grandchild-box">MARIEL</div>
-                        </div>
-                        <div class="child-branch-column"><span class="apo-header">Grandchild</span><div class="member child-box-name">KRIS</div></div>
                     </div>
                 </div>
 
@@ -406,12 +318,6 @@
                             <span class="apo-header">Great-Grandchild</span>
                             <div class="member grandchild-box">LA TRICE BADA</div>
                         </div>
-                        <div class="child-branch-column">
-                            <span class="apo-header">Grandchild</span>
-                            <div class="member child-box-name">CHARMAGNE- NATHAN KASSEES</div>
-                            <span class="apo-header">Great-Grandchild</span>
-                            <div class="member grandchild-box">ADEA TALA</div>
-                        </div>
                     </div>
                 </div>
 
@@ -421,14 +327,8 @@
                         <div class="member Child-box">LUCY-BOBOT FRADEJAS</div>
                     </div>
                     <div class="children-row">
-                        <div class="child-branch-column">
-                            <span class="apo-header">Grandchild</span>
-                            <div class="member child-box-name">BORIS</div>
-                        </div>
-                        <div class="child-branch-column">
-                            <span class="apo-header">Grandchild</span>
-                            <div class="member child-box-name">MEGAN</div>
-                        </div>
+                        <div class="child-branch-column"><span class="apo-header">Grandchild</span><div class="member child-box-name">BORIS</div></div>
+                        <div class="child-branch-column"><span class="apo-header">Grandchild</span><div class="member child-box-name">MEGAN</div></div>
                     </div>
                 </div>
 
