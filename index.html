@@ -8,9 +8,11 @@
         body, html {
             margin: 0;
             padding: 0;
+            /* FIXED: Binago mula sa hidden para makapag-scroll */
             height: 100%;
             width: 100%;
-            overflow: hidden; 
+            overflow-x: hidden; 
+            overflow-y: auto;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #f4f7f6;
         }
@@ -22,14 +24,16 @@
             padding: 15px 0;
             margin: 0;
             background: white;
-            z-index: 100;
-            position: relative;
+            z-index: 1000;
+            position: sticky;
+            top: 0;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
 
         .main-wrapper {
             display: flex;
-            height: calc(100vh - 70px);
+            /* FIXED: Ginawang auto ang height para hindi maputol ang content */
+            min-height: calc(100vh - 70px);
             width: 100vw;
         }
 
@@ -42,12 +46,14 @@
             justify-content: center;
             flex-shrink: 0;
             border-right: 3px solid #27ae60;
-            position: relative;
+            /* FIXED: Naka-sticky para laging nakikita ang Main Ancestors */
+            position: sticky;
+            top: 70px;
+            height: calc(100vh - 70px);
         }
 
         .scrollable-content {
             flex-grow: 1;
-            overflow: auto;
             padding: 40px;
             display: flex;
             align-items: flex-start;
@@ -148,11 +154,10 @@
         .grandchild-box:hover { transform: scale(1.02); border-style: solid; background-color: #ffffff; border-color: #27ae60; }
 
         @media (max-width: 900px) {
-            body, html { overflow: auto; }
             .main-wrapper { flex-direction: column; height: auto; }
-            .fixed-ancestor-sidebar { width: 100%; height: auto; padding: 30px 0; border-right: none; border-bottom: 3px solid #27ae60; }
+            .fixed-ancestor-sidebar { width: 100%; height: auto; padding: 30px 0; border-right: none; border-bottom: 3px solid #27ae60; position: relative; top: 0; }
             .main-connector { display: none; }
-            .scrollable-content { overflow: visible; width: 100%; padding: 20px; }
+            .scrollable-content { width: 100%; padding: 20px; }
             .family-unit { flex-direction: column; }
             .children-row { flex-direction: column; }
         }
@@ -358,7 +363,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="family-unit">
                     <div class="child-main">
                         <span class="label">Child</span>
@@ -388,7 +393,7 @@
                         <div class="child-branch-column"><span class="apo-header">Grandchild</span><div class="member child-box-name">KRIS</div></div>
                     </div>
                 </div>
-                
+
                 <div class="family-unit">
                     <div class="child-main">
                         <span class="label">Child</span>
@@ -409,7 +414,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="family-unit">
                     <div class="child-main">
                         <span class="label">Child</span>
@@ -427,5 +432,8 @@
                     </div>
                 </div>
 
-            </div> </div> </div> </body>
+            </div> 
+        </div> 
+    </div> 
+</body>
 </html>
